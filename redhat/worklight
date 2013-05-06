@@ -1,0 +1,76 @@
+#!/bin/bash
+#
+# worklight Starts the IBM Worklight Server
+#
+# chkconfig: - 64 36
+# description: IBM Worklight Server
+
+# le nom du service
+SERVICE_NAME=Worklight
+# le répertoire où se trouvent les exécutables du service
+SERVICE_DIRECTORY=/opt/worklight/server/wlp/bin
+
+WORKLIGHT_INSTANCE=worklightServer
+
+SERVICE_PROG="/opt/worklight/server/wlp/bin/server"
+
+SERVICE_STARTUP_OPTS="start ${WORKLIGHT_INSTANCE}"
+
+SERVICE_SHUTDOWN_OPTS="stop ${WORKLIGHT_INSTANCE}"
+
+SERVICE_STATUS_OPTS="status ${WORKLIGHT_INSTANCE}"
+
+RUN_USER=worklight
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+usage()
+{
+        echo "Usage: service $SERVICE_NAME (stop|start|restart)"
+         RETVAL=1
+}
+ 
+start()
+{
+        echo "Starting service '${SERVICE_NAME}'..."
+        daemon --user $RUN_USER ${SERVICE_PROG} ${SERVICE_STARTUP_OPTS}
+        echo "Service '${SERVICE_NAME}' started successfully"
+}
+ 
+stop()
+{
+        echo "Stopping service '${SERVICE_NAME}'..."
+        daemon --user $RUN_USER ${SERVICE_PROG} ${SERVICE_SHUTDOWN_OPTS}
+        echo "Service '${SERVICE_NAME}' stopped"
+}
+
+status()
+{
+        daemon --user $RUN_USER ${SERVICE_PROG} ${SERVICE_STATUS_OPTS}
+        echo ""
+}
+
+restart ()
+{
+    stop
+    start
+}
+ 
+case $1 in
+        stop)
+                stop
+        ;;
+        start)
+                start
+        ;;
+        restart)
+                restart
+        ;;
+        status)
+                status
+        ;;
+        *)
+                usage
+esac
+exit 0
